@@ -1,54 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tutoring App</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css" />
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="app">
-        <h1 v-text="siteName"></h1>
-    
-        <main>
-            <figure>
-                <img class="figure" v-bind:src="Product.image" alt="">
-            </figure>
+      <h1 v-text="siteName"></h1>
+      <button class="checkout" v-on:click="checkout">Checkout</button>
 
-            <div class="Maths-content">
-                <strong>Subject: {{ Product.name }}<br></strong>
-                <strong>Location: {{ Product.location }}<br></strong>
-                <strong>Price: {{ Product.price }}<br></strong>
-                <strong>Spaces: {{ Product.spaces }}<br></strong>
-                <button class="add-to-cart" v-on:click="addToCart">Add to cart</button>
-            </div>
-        </main>
+      <main>
+        <div
+          class="main-content"
+          v-for="product in products"
+          :key="product.name"
+          class="product"
+        >
+          <figure>
+            <img class="figure" v-bind:src="product.image" alt="" />
+          </figure>
+
+          <div class="Maths-content">
+            <strong>Subject: {{ product.name }}<br /></strong>
+            <strong>Location: {{ product.location }}<br /></strong>
+            <strong>Price: {{ product.price }}<br /></strong>
+            <strong>Spaces: {{ product.spaces }}<br /></strong>
+            <button class="add-to-cart" v-on:click="addToCart(product)">
+              Add to cart
+            </button>
+          </div>
+        </div>
+      </main>
     </div>
 
     <script type="text/javascript">
-        var lessonApp = new Vue({
-            el: '#app',
-            data: {
-                siteName: 'Tutoring App',
-                Product: {
-                    name: 'Maths',
-                    location: 'London',
-                    price: '£ 100',
-                    spaces: '10',
-                    image: "./Images/PMaths-pxckife9xotc2esxcod13tks9h2zru0w73ah75dby0.jpeg"
-                },
-                cart: []
+      var lessonApp = new Vue({
+        el: "#app",
+        data: {
+          siteName: "Tutoring App",
+          products: [
+            {
+              name: "Maths",
+              location: "London",
+              price: "£ 100",
+              spaces: "10",
+              image:
+                "./Images/PMaths-pxckife9xotc2esxcod13tks9h2zru0w73ah75dby0.jpeg",
             },
-            methods: {
-                addToCart: function() {
-                    alert('Added to cart');
-                }
+            {
+              name: "Maths",
+              location: "Manchester",
+              price: "£ 100",
+              spaces: "8",
+              image:
+                "./Images/PMaths-pxckife9xotc2esxcod13tks9h2zru0w73ah75dby0.jpeg",
             },
-            mounted() {
-                console.log(this.Product);
-            }
-        });
+            {
+              name: "Chemistry",
+              location: "London",
+              price: "£ 130",
+              spaces: "12",
+              image:
+                "./Images/1000_F_438697732_VOA5exdnvidqFuC2M3koVPNOqikvc8sy.jpg",
+            },
+            {
+              name: "Chemistry",
+              location: "Edinburgh",
+              price: "£ 140",
+              spaces: "15",
+              image:
+                "./Images/1000_F_438697732_VOA5exdnvidqFuC2M3koVPNOqikvc8sy.jpg",
+            },
+            {
+              name: "English",
+              location: "Cambridge",
+              price: "£ 150",
+              spaces: "18",
+              image:
+                "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg",
+            },
+            {
+              name: "English",
+              location: "Oxford",
+              price: "£ 160",
+              spaces: "20",
+              image:
+                "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg",
+            },
+            {
+              name: "Physics",
+              location: "London",
+              price: "£ 170",
+              spaces: "20",
+              image:
+                "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp",
+            },
+            {
+              name: "Physics",
+              location: "Scotland",
+              price: "£ 170",
+              spaces: "20",
+              image:
+                "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp",
+            },
+            {
+              name: "Music",
+              location: "Wales",
+              price: "£ 170",
+              spaces: "20",
+              image: "./Images/ttttttttttttttttttttt-01-773.webp",
+            },
+            {
+              name: "Physics",
+              location: "Northern Ireland",
+              price: "£ 170",
+              spaces: "20",
+              image: "./Images/ttttttttttttttttttttt-01-773.webp",
+            },
+          ],
+          cart: [],
+        },
+        methods: {
+          checkout: function () {
+            alert("Checkout");
+          },
+          addToCart: function (product) {
+            alert("Added " + product.name + " to cart");
+          },
+        },
+        mounted() {
+          console.log(this.products);
+        },
+      });
     </script>
-</body>
+  </body>
 </html>
