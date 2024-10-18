@@ -5,34 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tutoring App</title>
     <link rel="stylesheet" href="index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <script src="products.js"></script>
   </head>
   <body>
     <div id="app">
       <h1 v-text="siteName"></h1>
-      <button class="checkout" v-on:click="checkout">Checkout</button>
 
-      <main>
-        <div
-          class="main-content"
-          v-for="product in products"
-          :key="product.name"
-          class="product"
-        >
+      <!-- Checkout Page -->
+      <main v-if="currentView === 'checkout'">
+        <h2>Checkout Page</h2>
+
+        <!-- Cart Items -->
+        <ul>
+          <li v-for="item in cart" :key="item.id">{{ item.name }} - £{{ item.price }}</li>
+        </ul>
+
+        <!-- Form for User Details -->
+        <h2>Enter Your Details</h2>
+        <form @submit.prevent="submitOrder">
+          <div>
+            <label for="name">Name: </label>
+            <input type="text" v-model="customerName" required />
+          </div>
+          <div>
+            <label for="phone">Phone: </label>
+            <input type="tel" v-model="customerPhone" required />
+          </div>
+          <button type="submit">Submit Order</button>
+        </form>
+
+        <!-- Back to Product List Button -->
+        <button v-on:click="backToProductList">Back To Product List</button>
+      </main>
+
+      <!-- Product List Page -->
+      <main v-if="currentView === 'productList'">
+        <div class="main-content" v-for="product in products" :key="product.id">
           <figure>
             <img class="figure" v-bind:src="product.image" alt="" />
           </figure>
-
           <div class="Maths-content">
+            <!-- Product Details -->
             <strong>Subject: {{ product.name }}<br /></strong>
             <strong>Location: {{ product.location }}<br /></strong>
-            <strong>Price: {{ product.price }}<br /></strong>
-            <strong>Spaces: {{ product.spaces }}<br /></strong>
-            <button class="add-to-cart" v-on:click="addToCart(product)">
+            <strong>Price: £{{ product.price }}<br /></strong>
+            <strong>Spaces: {{ itemsLeft(product) }}<br /></strong>
+
+            <!-- Add to Cart Button -->
+            <button
+              class="add-to-cart"
+              v-on:click="addToCart(product)"
+              :disabled="itemsLeft(product) === 0"
+            >
               Add to cart
             </button>
+
+            <!-- Display Messages Based on Available Spaces -->
+            <span v-if="itemsLeft(product) === 0"><b> All out!</b></span>
+            <span v-else-if="itemsLeft(product) < 5">
+              <b>Only {{ itemsLeft(product) }} spaces left!</b>
+            </span>
+            <span v-else><b>Buy now!!</b></span>
+
+            <!-- Rating Section -->
+            <div>
+              <span v-for="n in product.rating || 0" :key="'filled-' + n">
+                <i class="fa-solid fa-star"></i>
+              </span>
+              <span v-for="n in (5 - (product.rating || 0))" :key="'empty-' + n">
+                <i class="fa-regular fa-star"></i>
+              </span>
+            </div>
           </div>
         </div>
+
+        <!-- Checkout Button -->
+        <button class="checkout" v-on:click="goToCheckout">
+          {{ cartItemCount }} <span class="fas fa-cart-plus"></span> Checkout
+        </button>
       </main>
     </div>
 
@@ -41,95 +96,63 @@
         el: "#app",
         data: {
           siteName: "Tutoring App",
-          products: [
-            {
-              name: "Maths",
-              location: "London",
-              price: "£ 100",
-              spaces: "10",
-              image:
-                "./Images/PMaths-pxckife9xotc2esxcod13tks9h2zru0w73ah75dby0.jpeg",
-            },
-            {
-              name: "Maths",
-              location: "Manchester",
-              price: "£ 100",
-              spaces: "8",
-              image:
-                "./Images/PMaths-pxckife9xotc2esxcod13tks9h2zru0w73ah75dby0.jpeg",
-            },
-            {
-              name: "Chemistry",
-              location: "London",
-              price: "£ 130",
-              spaces: "12",
-              image:
-                "./Images/1000_F_438697732_VOA5exdnvidqFuC2M3koVPNOqikvc8sy.jpg",
-            },
-            {
-              name: "Chemistry",
-              location: "Edinburgh",
-              price: "£ 140",
-              spaces: "15",
-              image:
-                "./Images/1000_F_438697732_VOA5exdnvidqFuC2M3koVPNOqikvc8sy.jpg",
-            },
-            {
-              name: "English",
-              location: "Cambridge",
-              price: "£ 150",
-              spaces: "18",
-              image:
-                "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg",
-            },
-            {
-              name: "English",
-              location: "Oxford",
-              price: "£ 160",
-              spaces: "20",
-              image:
-                "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg",
-            },
-            {
-              name: "Physics",
-              location: "London",
-              price: "£ 170",
-              spaces: "20",
-              image:
-                "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp",
-            },
-            {
-              name: "Physics",
-              location: "Scotland",
-              price: "£ 170",
-              spaces: "20",
-              image:
-                "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp",
-            },
-            {
-              name: "Music",
-              location: "Wales",
-              price: "£ 170",
-              spaces: "20",
-              image: "./Images/ttttttttttttttttttttt-01-773.webp",
-            },
-            {
-              name: "Physics",
-              location: "Northern Ireland",
-              price: "£ 170",
-              spaces: "20",
-              image: "./Images/ttttttttttttttttttttt-01-773.webp",
-            },
-          ],
-          cart: [],
+          products: products,  // Loaded from products.js
+          cart: [],  // Items added to the cart
+          customerName: "",  // User's name for checkout
+          customerPhone: "",  // User's phone number for checkout
+          currentView: "productList",  // Tracks the current view (productList or checkout)
         },
         methods: {
-          checkout: function () {
-            alert("Checkout");
-          },
+          // Add product to the cart
           addToCart: function (product) {
-            alert("Added " + product.name + " to cart");
+            if (this.itemsLeft(product) > 0) {
+              this.cart.push(product);
+
+              // Show alert only the first time an item is added
+              if (!product.addedToCart) {
+                alert("Added " + product.name + " to cart");
+                product.addedToCart = true;
+              }
+            } else {
+              alert("No more spaces available for " + product.name);
+            }
           },
+          // Calculate how many spaces are left for a product
+          itemsLeft: function (product) {
+            const countInCart = this.cart.filter(
+              (item) => item.id === product.id
+            ).length;
+            return product.availableSpaces - countInCart;
+          },
+          // Switch to Checkout View
+          goToCheckout: function () {
+            this.currentView = "checkout";  // Switch view to 'checkout'
+          },
+          // Switch Back to Product List View
+          backToProductList: function () {
+            this.currentView = "productList";  // Switch view back to 'productList'
+          },
+          // Submit the order (validate form and process)
+          submitOrder: function () {
+            if (this.customerName && this.customerPhone) {
+              alert(
+                `Order placed! Thank you, ${this.customerName}. We will contact you at ${this.customerPhone}.`
+              );
+              // Clear the cart and reset customer details
+              this.cart = [];
+              this.customerName = "";
+              this.customerPhone = "";
+              // Go back to the product list after order submission
+              this.currentView = "productList";
+            } else {
+              alert("Please fill in all required fields.");
+            }
+          }
+        },
+        computed: {
+          cartItemCount: function () {
+            return this.cart.length || "";
+          }
         },
         mounted() {
           console.log(this.products);

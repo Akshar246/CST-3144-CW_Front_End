@@ -1,13 +1,18 @@
 #app {
+
+  display: grid;
 }
+
 .figure {
   width: 100px;
   height: 100%;
   object-fit: cover;
 }
+
 .Maths-content {
   margin-left: 35px;
 }
+
 .add-to-cart {
   margin-top: 10px;
   padding: 10px 20px;
@@ -20,43 +25,59 @@
   transition: transform 0.3s;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
 .add-to-cart:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
-.main-content {
-  display: flex;
-  flex-direction: row;
-  border: solid;
-  border-radius: 10px;
-  padding: 10px;
-  margin: 10px;
+
+/* .main-content {
+  display: inline; 
   width: 30%;
   height: 30%;
+  margin: 10px;
+  padding: 10px;
+  border: solid;
+  border-radius: 10px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   cursor: pointer;
-}
-.main-content:hover {
+} */
+
+/* .main-content:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
   border: solid;
-}
+} */
 
 .checkout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 50px;
   margin-top: 10px;
   padding: 10px 20px;
   font-size: 16px;
+  font-weight: bold;
   color: #fff;
   background-color: #007bff;
   border: none;
   border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s;
+  font-family: "Segoe UI",  sans-serif;
+}
+
+.checkout:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+}
+
+.checkout-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  transition: transform 0.3s;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
 }
+
