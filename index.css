@@ -23,13 +23,20 @@
   border-radius: 5px;
   cursor: pointer;
   transition: transform 0.3s;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .add-to-cart:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
+
+.disabled-button {
+  background-color: #d9534f; /* Red color for disabled state */
+  cursor: not-allowed;
+}
+
+
 
 /* .main-content {
   display: inline; 
@@ -51,12 +58,16 @@
 } */
 
 .checkout {
+  position: absolute; /* Change to absolute positioning */
+  top: 10px; /* Adjust the top position as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for centering */
   display: flex;
   justify-content: center;
   align-items: center;
   width: 30%;
   height: 50px;
-  margin-top: 10px;
+  margin-top: 10px; /* You may want to remove this */
   padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
@@ -67,12 +78,9 @@
   cursor: pointer;
   transition: transform 0.3s;
   font-family: "Segoe UI",  sans-serif;
+  z-index: 1000; /* Ensure it appears on top */
 }
 
-.checkout:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-}
 
 .checkout-container {
   display: flex;
@@ -80,4 +88,3 @@
   align-items: center;
   height: 100vh;
 }
-

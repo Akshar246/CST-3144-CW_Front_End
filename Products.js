@@ -10,7 +10,7 @@ let products = [
       "rating": 3
     },
     {
-      "id": 1,
+      "id": 2,
       "name": "Maths",
       "location": "Manchester",
       "price": "£ 100",
@@ -20,7 +20,7 @@ let products = [
       "rating": 4
     },
     {
-      "id": 2,
+      "id": 3,
       "name": "Chemistry",
       "location": "London",
       "price": "£ 130",
@@ -30,7 +30,7 @@ let products = [
       "rating": 5
     },
     {
-      "id": 2,
+      "id": 4,
       "name": "Chemistry",
       "location": "Edinburgh",
       "price": "£ 140",
@@ -40,7 +40,7 @@ let products = [
       "image": "./Images/1000_F_438697732_VOA5exdnvidqFuC2M3koVPNOqikvc8sy.jpg"
     },
     {
-      "id": 3,
+      "id": 5,
       "name": "English",
       "location": "Cambridge",
       "price": "£ 150",
@@ -50,7 +50,7 @@ let products = [
       "image": "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg"
     },
     {
-      "id": 3,
+      "id": 6,
       "name": "English",
       "location": "Oxford",
       "price": "£ 160",
@@ -60,7 +60,7 @@ let products = [
       "image": "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg"
     },
     {
-      "id": 4,
+      "id": 7,
       "name": "Physics",
       "location": "London",
       "price": "£ 170",
@@ -70,7 +70,7 @@ let products = [
       "image": "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp"
     },
     {
-      "id": 4,
+      "id": 8,
       "name": "Physics",
       "location": "Scotland",
       "price": "£ 170",
@@ -80,7 +80,7 @@ let products = [
       "image": "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp"
     },
     {
-      "id": 5,
+      "id": 9,
       "name": "Music",
       "location": "Wales",
       "price": "£ 170",
@@ -90,7 +90,7 @@ let products = [
       "image": "./Images/ttttttttttttttttttttt-01-773.webp"
     },
     {
-      "id": 5,
+      "id": 10,
       "name": "Physics",
       "location": "Northern Ireland",
       "price": "£ 170",
