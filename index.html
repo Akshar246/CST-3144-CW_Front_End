@@ -1,239 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tutoring App</title>
-    <link rel="stylesheet" href="index.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-    <script src="products.js"></script>
-  </head>
-  <body>
-    <div id="app">
-      <h1 v-text="siteName"></h1>
-      <!-- Checkout Page -->
-      <main class="checkout-page" v-if="currentView === 'checkout'">
-        <h2 class="checkout-heading">Checkout Page</h2>
 
-        <div v-if="cart.length > 0">
-          <ul class="cart-items">
-            <li class="cart-item" v-for="item in cart" :key="item.cartId">
-              <img
-                class="figure"
-                :src="item.image"
-                alt="Lesson Image"
-                style="width: 100px; height: auto"
-              />
-              <br />
-              <strong>{{ item.name }}</strong> - £{{ item.price }} - {{
-              item.location }} <br />
-              <strong>Subject:</strong> {{ item.name }} <br />
-              <strong>Price:</strong> £{{ item.price }} <br />
-              <strong>Location:</strong> {{ item.location }} <br />
-              <button v-on:click="removeFromCart(item)">Remove</button>
-            </li>
-          </ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutoring App</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+  <script src="products.js"></script>
+</head>
 
-          <!-- Form for User Details -->
-          <h2 class="checkout-heading">Enter Your Details</h2>
-          <form @submit.prevent="submitOrder" class="checkout-form">
-            <div class="form-group">
-              <label for="name" class="form-label">Name: </label>
-              <input
-                type="text"
-                v-model="customerName"
-                class="form-input"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="phone" class="form-label">Phone: </label>
-              <input
-                type="tel"
-                v-model.number="customerPhone"
-                class="form-input"
-                required
-              />
-            </div>
-            <button type="submit" class="submit-button">Submit Order</button>
-          </form>
+<body>
+  <div id="app">
+    <h1 v-text="siteName"></h1>
 
-          <!-- Back to Product List Button -->
-          <button class="back-button" v-on:click="backToProductList">
-            Back To Product List
+    
+    <!-- Checkout Page -->
+    <main class="checkout-page" v-if="currentView === 'checkout'">
+      <h2 class="checkout-heading">Checkout Page</h2>
+
+      <div v-if="cart.length > 0">
+        <ul class="cart-items">
+          <li class="cart-item" v-for="item in cart" :key="item.cartId">
+            <img class="figure" :src="item.image" alt="Lesson Image" style="width: 100px; height: auto" />
+            <br />
+            <strong>{{ item.name }}</strong> - £{{ item.price }} - {{
+            item.location }} <br />
+            <strong>Subject:</strong> {{ item.name }} <br />
+            <strong>Price:</strong> £{{ item.price }} <br />
+            <strong>Location:</strong> {{ item.location }} <br />
+            <button v-on:click="removeFromCart(item)">Remove</button>
+          </li>
+        </ul>
+
+        <!-- Form for User Details -->
+        <h2 class="checkout-heading">Enter Your Details</h2>
+        <form @submit.prevent="submitOrder" class="checkout-form">
+          <div class="form-group">
+            <label for="name" class="form-label">Name: </label>
+            <input type="text" v-model="customerName" class="form-input" required />
+            <p v-if="validName" class="error">{{validName}}</p>
+          </div>
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone: </label>
+            <input type="tel" v-model.number="customerPhone" class="form-input" required />
+          </div>
+          <p v-if="validNumber">{{validNumber}}</p>
+          <button type="submit" class="submit-button">Submit Order</button>
+        </form>
+
+        <!-- Back to Product List Button -->
+        <button class="back-button" v-on:click="backToProductList">
+          Back To Product List
+        </button>
+      </div>
+      <div v-else="">
+        <h2>Your Cart Is Empty</h2>
+      </div>
+    </main>
+
+    <!-- Product List Page -->
+    <main v-if="currentView === 'productList'">
+      <input type="text" v-model="searchQuery" placeholder="Search subjects..." />
+      <div class="main-content" v-for="product in filteredProducts" :key="product.id">
+        <figure>
+          <img class="figure" v-bind:src="product.image" alt="" />
+        </figure>
+        <div class="Maths-content">
+          <!-- Product Details -->
+          <strong>Subject: {{ product.name }}<br /></strong>
+          <strong>Location: {{ product.location }}<br /></strong>
+          <strong>Price: {{ product.price }}<br /></strong>
+          <strong>Spaces: {{ itemsLeft(product) }}<br /></strong>
+
+          <!-- Add to Cart Button -->
+          <button class="add-to-cart" :class="{'disabled-button': itemsLeft(product) === 0}"
+            v-on:click="addToCart(product)" :disabled="itemsLeft(product) === 0">
+            Add to cart
           </button>
-        </div>
-        <div v-else="">
-          <h2>Your Cart Is Empty</h2>
-        </div>
-      </main>
 
-      <!-- Product List Page -->
-      <main v-if="currentView === 'productList'">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search subjects..."
-        />
-        <div
-          class="main-content"
-          v-for="product in filteredProducts"
-          :key="product.id"
-        >
-          <figure>
-            <img class="figure" v-bind:src="product.image" alt="" />
-          </figure>
-          <div class="Maths-content">
-            <!-- Product Details -->
-            <strong>Subject: {{ product.name }}<br /></strong>
-            <strong>Location: {{ product.location }}<br /></strong>
-            <strong>Price: {{ product.price }}<br /></strong>
-            <strong>Spaces: {{ itemsLeft(product) }}<br /></strong>
+          <!-- Display Messages Based on Available Spaces -->
+          <span v-if="itemsLeft(product) === 0"><b> All out!</b></span>
+          <span v-else-if="itemsLeft(product) < 5">
+            <b>Only {{ itemsLeft(product) }} spaces left!</b>
+          </span>
+          <span v-else><b>Buy now!!</b></span>
 
-            <!-- Add to Cart Button -->
-            <button
-              class="add-to-cart"
-              :class="{'disabled-button': itemsLeft(product) === 0}"
-              v-on:click="addToCart(product)"
-              :disabled="itemsLeft(product) === 0"
-            >
-              Add to cart
-            </button>
-
-            <!-- Display Messages Based on Available Spaces -->
-            <span v-if="itemsLeft(product) === 0"><b> All out!</b></span>
-            <span v-else-if="itemsLeft(product) < 5">
-              <b>Only {{ itemsLeft(product) }} spaces left!</b>
+          <!-- Rating Section -->
+          <div>
+            <span v-for="n in product.rating || 0" :key="'filled-' + n">
+              <i class="fa-solid fa-star"></i>
             </span>
-            <span v-else><b>Buy now!!</b></span>
-
-            <!-- Rating Section -->
-            <div>
-              <span v-for="n in product.rating || 0" :key="'filled-' + n">
-                <i class="fa-solid fa-star"></i>
-              </span>
-              <span
-                v-for="n in (5 - (product.rating || 0))"
-                :key="'empty-' + n"
-              >
-                <i class="fa-regular fa-star"></i>
-              </span>
-            </div>
+            <span v-for="n in (5 - (product.rating || 0))" :key="'empty-' + n">
+              <i class="fa-regular fa-star"></i>
+            </span>
           </div>
         </div>
-      </main>
+      </div>
+    </main>
 
-      <!-- Checkout Button -->
-      <button class="checkout" v-on:click="goToCheckout">
-        {{ cartItemCount }} <span class="fas fa-cart-plus"></span> Checkout
-      </button>
-    </div>
+    <!-- Checkout Button -->
+    <button class="checkout" v-on:click="goToCheckout">
+      {{ cartItemCount }} <span class="fas fa-cart-plus"></span> Checkout
+    </button>
+  </div>
 
-    <script type="text/javascript">
-      var lessonApp = new Vue({
-        el: "#app",
-        data: {
-          siteName: "Tutoring App",
-          products: products, // Loaded from products.js
-          cart: [],
-          customerName: "",
-          customerPhone: "",
-          currentView: "productList",
-          searchQuery: "", // For storing the search input
+  <script type="text/javascript">
+    var lessonApp = new Vue({
+      el: "#app",
+      data: {
+        siteName: "Tutoring App",
+        products: products, // Loaded from products.js
+        cart: [],
+        // Storing temp data 
+        customerName: "",
+        customerPhone: "",
+        validName: "",
+        validNumber: "",
+        currentView: "productList",
+        searchQuery: "",
+      },
+      computed: {
+        sortedFilteredProducts() {
+          // function compare(a,b) {
+          //   if (a.price > b.price) return 1;
+          //   if (a.price < b.price) return -1;
+          //   return 0;
+          // }
+          // return this.products.sort(compare);
+    },
+        // search query
+        filteredProducts() {
+          return this.products.filter((product) => {
+            return product.name
+              .toLowerCase()
+              .includes(this.searchQuery.toLowerCase());
+          });
         },
-        computed: {
-          // search query
-          filteredProducts() {
-            return this.products.filter((product) => {
-              return product.name
-                .toLowerCase()
-                .includes(this.searchQuery.toLowerCase());
-            });
-          },
-          cartItemCount: function () {
-            return this.cart.length || "";
-          },
+        cartItemCount: function () {
+          return this.cart.length || "";
         },
-        methods: {
-          // Add product to the cart
-          addToCart: function (product) {
-            if (this.itemsLeft(product) > 0) {
-              const cartItem = {
-                ...product,
-                cartId: Date.now() + Math.random(), // Create a unique ID for each cart item
-              };
+      },
+      methods: {
+        // Add product to the cart
+        addToCart: function (product) {
+          if (this.itemsLeft(product) > 0) {
+            const cartItem = {
+              ...product,
+              cartId: Date.now() + Math.random(), // Create a unique ID for each cart item
+            };
 
-              this.cart.push(cartItem);
+            this.cart.push(cartItem);
 
-              if (!product.addedToCart) {
-                alert("Added " + product.name + " to cart");
-                product.addedToCart = true;
+            if (!product.addedToCart) {
+              product.addedToCart = true;
+            }
+          } else {
+            alert("No more spaces available for " + product.name);
+          }
+        },
+
+        removeFromCart: function (product) {
+          // Index base identification
+          let index = this.cart.findIndex(
+            (item) => item.cartId === product.cartId
+          );
+          if (index !== -1) {
+            this.cart.splice(index, 1);
+          }
+        },
+        // Calculate how many spaces are left for a product
+        itemsLeft: function (product) {
+          const countInCart = this.cart.filter(
+            (item) => item.id === product.id
+          ).length;
+          return product.availableSpaces - countInCart;
+        },
+        // Switch to checkout page
+        goToCheckout: function () {
+          if (this.currentView === "productList") {
+            this.currentView = "checkout";
+          } else if (this.currentView === "checkout") {
+            this.currentView = "productList";
+          }
+        },
+
+        backToProductList: function () {
+          this.currentView = "productList"; // Switch view back to 'productList'
+        },
+
+        submitOrder: function () {
+          this.validName = "";
+          this.validNumber = "";
+
+          const namePattern = /^[a-zA-Z]+$/;
+          const noSpacesPattern = /^\S+$/;
+          const phonePattern = /^[0-9]+$/;
+
+
+          if (!namePattern.test(this.customerName) || !noSpacesPattern.test(this.customerName)) {
+            this.validName = "Name must contain only letters and no space.";
+          }
+
+          if (!phonePattern.test(this.customerPhone)) {
+            this.validNumber = "Phone number must contain only numbers.";
+          }
+
+          if (this.validName || this.validNumber) {
+            return;
+          }
+
+          if (this.customerName && this.customerPhone) {
+            // Reduce available spaces for each item in the cart
+            this.cart.forEach((cartItem) => {
+              const product = this.products.find((p) => p.id === cartItem.id);
+              if (product) {
+                product.availableSpaces -= 1;
               }
-            } else {
-              alert("No more spaces available for " + product.name);
-            }
-          },
-
-          removeFromCart: function (product) {
-            // Index base identification
-            let index = this.cart.findIndex(
-              (item) => item.cartId === product.cartId
+            });
+            alert(
+              `Order placed! Thank you, ${this.customerName}. We will contact you at ${this.customerPhone}.`
             );
-            if (index !== -1) {
-              this.cart.splice(index, 1);
-            }
-          },
-          // Calculate how many spaces are left for a product
-          itemsLeft: function (product) {
-            const countInCart = this.cart.filter(
-              (item) => item.id === product.id
-            ).length;
-            return product.availableSpaces - countInCart;
-          },
-                        // Switch to checkout page
-          goToCheckout: function () {
-            if (this.currentView === "productList") {
-              this.currentView = "checkout";
-            } else if (this.currentView === "checkout") {
-              this.currentView = "productList";
-            }
-          },
 
-          backToProductList: function () {
-            this.currentView = "productList"; // Switch view back to 'productList'
-          },
+            // Clear the cart and reset customer details
+            this.cart = [];
+            this.customerName = "";
+            this.customerPhone = "";
+            this.currentView = "productList";  // Return to product list
+          } else {
+            alert("Please fill in all required fields.");
+          }
+        },
 
-          // Submit the order (validate form and process, update product spaces)
-          submitOrder: function () {
-            if (this.customerName && this.customerPhone) {
-              this.cart.forEach((cartItem) => {
-                const product = this.products.find((p) => p.id === cartItem.id);
-                if (product) {
-                  product.availableSpaces -= 1; 
-                }
-              });
-
-              alert(
-                `Order placed! Thank you, ${this.customerName}. We will contact you at ${this.customerPhone}.`
-              );
-              // Clear the cart and reset customer details
-              this.cart = [];
-              this.customerName = "";
-              this.customerPhone = "";
-              this.currentView = "productList";
-            } else {
-              alert("Please fill in all required fields.");
-            }
-          },
-        }, 
         mounted() {
           console.log(this.products);
         },
-      });
-    </script>
-  </body>
+      }
+    })
+  </script> 
+</body>
+
 </html>

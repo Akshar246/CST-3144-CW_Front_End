@@ -93,7 +93,7 @@ let products = [
       "id": 10,
       "name": "Physics",
       "location": "Northern Ireland",
-      "price": "£ 170",
+      "price": "£ 80",
       "availableSpaces": 2,
       "rating": 3,
       "image": "./Images/ttttttttttttttttttttt-01-773.webp"
