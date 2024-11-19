@@ -14,7 +14,6 @@
 <body>
   <div id="app">
     <h1 v-text="siteName"></h1>
-
     <!-- Checkout Page -->
     <main class="checkout-page" v-if="currentView === 'checkout'">
       <h2 class="checkout-heading">Checkout Page</h2>
@@ -97,11 +96,13 @@
       el: "#app",
       data: {
         siteName: "Tutoring App",
-        products: [], // Initially empty, fetched from backend
+        products: [], // fetched from backend
         cart: [],
         customerName: "",
         customerPhone: "",
         currentView: "productList",
+        sortBy: "subject",
+        sortOrder: "asc",
       },
       computed: {
         cartItemCount: function () {
@@ -121,6 +122,7 @@
               throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             this.products = data;
+            this.sortProducts();
           } catch (error) {
             console.error("Error fetching lessons:", error);
           }
@@ -145,6 +147,74 @@
           } catch (error) {
             console.error("Error saving order:", error);
             throw error;
+          }
+        },
+        async updateLessonSpaces(lessonId, updatedProductData) {
+          try {
+            const response = await fetch(
+              `http://localhost:3000/api/products/${lessonId}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedProductData), // Send updated product details
+              }
+            );
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Failed to update product: ${errorText}`);
+            }
+
+            const updatedProduct = await response.json();
+            console.log("Product updated successfully:", updatedProduct);
+
+            return updatedProduct;
+          } catch (error) {
+            console.error("Error updating product:", error);
+            throw error;
+          }
+        },
+
+        async submitOrder() {
+          try {
+            if (this.cart.length === 0) {
+              alert(
+                "Your cart is empty. Please add items to your cart before submitting an order."
+              );
+              return;
+            }
+
+            // Prepare the order details
+            const order = {
+              name: this.customerName,
+              phoneNumber: this.customerPhone,
+              lessonIds: this.cart.map((item) => item.id),
+              numberOfSpaces: this.cart.length,
+            };
+
+            // Save the order (POST request)
+            const orderId = await this.saveOrder(order);
+            alert(`Order submitted successfully!`);
+
+            for (const cartItem of this.cart) {
+              const updatedData = {
+                availableSpaces: cartItem.availableSpaces - 1,
+              };
+              await this.updateLessonSpaces(cartItem._id, updatedData); // Call PUT request
+            }
+
+            // Reset form and cart
+            this.customerName = "";
+            this.customerPhone = "";
+            this.cart = [];
+            this.currentView = "productList";
+          } catch (error) {
+            console.error("Error submitting order:", error);
+            alert(
+              "There was an error submitting your order. Please try again."
+            );
           }
         },
 
