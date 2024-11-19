@@ -14,6 +14,16 @@
 <body>
   <div id="app">
     <h1 v-text="siteName"></h1>
+
+    <select v-model="sortBy" @change="sortProducts">
+      <option value="subject">Subject</option>
+      <option value="location">Location</option>
+      <option value="price">Price</option>
+      <option value="spaces">Spaces</option>
+    </select>
+    <button @click="toggleSortOrder">Sort Order</button>
+    
+
     <!-- Checkout Page -->
     <main class="checkout-page" v-if="currentView === 'checkout'">
       <h2 class="checkout-heading">Checkout Page</h2>
@@ -113,6 +123,27 @@
         },
       },
       methods: {
+        sortProducts() {
+    const compare = (a, b) => {
+      let fieldA = a[this.sortBy];
+      let fieldB = b[this.sortBy];
+
+      if (this.sortBy === "price" || this.sortBy === "spaces") {
+        fieldA = parseFloat(fieldA);
+        fieldB = parseFloat(fieldB);
+      }
+
+      if (fieldA < fieldB) return this.sortOrder === "asc" ? -1 : 1;
+      if (fieldA > fieldB) return this.sortOrder === "asc" ? 1 : -1;
+      return 0;
+    };
+
+    this.products.sort(compare);
+  },
+  toggleSortOrder() {
+    this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
+    this.sortProducts(); // Ensure sorting happens immediately
+  },
         async fetchLessons() {
           try {
             const response = await fetch(
