@@ -15,14 +15,62 @@
   <div id="app">
     <h1 v-text="siteName"></h1>
 
-    <select v-model="sortBy" @change="sortProducts">
-      <option value="subject">Subject</option>
-      <option value="location">Location</option>
-      <option value="price">Price</option>
-      <option value="spaces">Spaces</option>
-    </select>
-    <button @click="toggleSortOrder">Sort Order</button>
-    
+    <!-- Checkout Button -->
+    <button class="checkout" v-on:click="toggleView" :disabled="cart.length === 0">
+      {{ cartItemCount }} <span class="fas fa-cart-plus"></span> Checkout
+    </button>
+
+    <!-- Search and Sorting Options -->
+    <div class="controls" v-if="currentView === 'productList'">
+      <div class="search-container">
+        <input type="text" v-model="searchQuery" @input="performSearch" placeholder="Search lessons by name" />
+      </div>
+
+      <!-- Sorting Options -->
+      <div class="sorting-options">
+        <select v-model="sortBy">
+          <option value="name">Name</option>
+          <option value="location">Location</option>
+          <option value="price">Price</option>
+          <option value="availableSpaces">Spaces</option>
+        </select>
+        <button @click="toggleSortOrder">
+          Sort Order: {{ sortOrder === "asc" ? "Ascending" : "Descending" }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Product List Page -->
+    <main v-if="currentView === 'productList'">
+      <div class="main-content" v-for="product in displayedProducts" :key="product.id">
+        <figure>
+          <img class="figure" :src="product.image" alt="" />
+        </figure>
+        <div class="Maths-content">
+          <strong>Subject: {{ product.name }}<br /></strong>
+          <strong>Location: {{ product.location }}<br /></strong>
+          <strong>Price: {{ product.price }}<br /></strong>
+          <strong>Spaces: {{ itemsLeft(product) }}<br /></strong>
+          <button class="add-to-cart" :class="{ 'disabled-button': itemsLeft(product) === 0 }"
+            @click="addToCart(product)" :disabled="itemsLeft(product) === 0">
+            Add to cart
+          </button>
+          <span v-if="itemsLeft(product) === 0"><b> All out!</b></span>
+          <span v-else-if="itemsLeft(product) < 5">
+            <b>Only {{ itemsLeft(product) }} spaces left!</b>
+          </span>
+          <span v-else><b>Buy now!!</b></span>
+          <div>
+            <span v-for="n in product.rating || 0" :key="'filled-' + n">
+              <i class="fa-solid fa-star"></i>
+            </span>
+            <span v-for="n in (5 - (product.rating || 0))" :key="'empty-' + n">
+              <i class="fa-regular fa-star"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
 
     <!-- Checkout Page -->
     <main class="checkout-page" v-if="currentView === 'checkout'">
@@ -32,10 +80,10 @@
           <li class="cart-item" v-for="item in cart" :key="item.cartId">
             <img class="figure" :src="item.image" alt="Lesson Image" style="width: 100px; height: auto" />
             <br />
-            <strong>Name:</strong> {{ item.name }} <br />
-            <strong>Subject:</strong> {{ item.name }} <br />
-            <strong>Price:</strong> {{ item.price }} <br />
-            <strong>Location:</strong> {{ item.location }} <br />
+            <strong>Subject: {{ item.name }}</strong><br />
+            <strong>Location: {{ item.location }}</strong><br />
+            <strong>Price: £{{ item.price }}</strong><br />
+            <strong>Spaces: {{ item.availableSpaces }}</strong><br />
             <button v-on:click="removeFromCart(item)">Remove</button>
           </li>
         </ul>
@@ -54,52 +102,12 @@
           <button type="submit" class="submit-button">Submit Order</button>
         </form>
       </div>
-      <div v-else="">
+      <div v-else>
         <h2>Your Cart Is Empty</h2>
-        <button class="back-button" v-on:click="backToProductList">
-          Back To Product List
-        </button>
       </div>
     </main>
-
-    <!-- Product List Page -->
-    <main v-if="currentView === 'productList'">
-      <div class="main-content" v-for="product in products" :key="product.id">
-        <figure>
-          <img class="figure" v-bind:src="product.image" alt="" />
-        </figure>
-        <div class="Maths-content">
-          <strong>Subject: {{ product.name }}<br /></strong>
-          <strong>Location: {{ product.location }}<br /></strong>
-          <strong>Price: {{ product.price }}<br /></strong>
-          <strong>Spaces: {{ itemsLeft(product) }}<br /></strong>
-          <button class="add-to-cart" :class="{'disabled-button': itemsLeft(product) === 0}"
-            v-on:click="addToCart(product)" :disabled="itemsLeft(product) === 0">
-            Add to cart
-          </button>
-          <span v-if="itemsLeft(product) === 0"><b> All out!</b></span>
-          <span v-else-if="itemsLeft(product) < 5">
-            <b>Only {{ itemsLeft(product) }} spaces left!</b>
-          </span>
-          <span v-else><b>Buy now!!</b></span>
-          <!-- Rating Section -->
-          <div>
-            <span v-for="n in product.rating || 0" :key="'filled-' + n">
-              <i class="fa-solid fa-star"></i>
-            </span>
-            <span v-for="n in (5 - (product.rating || 0))" :key="'empty-' + n">
-              <i class="fa-regular fa-star"></i>
-            </span>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Checkout Button -->
-    <button class="checkout" v-on:click="goToCheckout" :disabled="isCheckoutButtonDisabled">
-      {{ cartItemCount }} <span class="fas fa-cart-plus"></span> Checkout
-    </button>
   </div>
+
 
   <script type="text/javascript">
     var lessonApp = new Vue({
@@ -111,10 +119,15 @@
         customerName: "",
         customerPhone: "",
         currentView: "productList",
-        sortBy: "subject",
+        sortBy: "name",
         sortOrder: "asc",
+        searchQuery: "",
+        searchResults: [],
       },
       computed: {
+        displayedProducts() {
+          return this.searchQuery.trim() ? this.searchResults : this.products;
+        },
         cartItemCount: function () {
           return this.cart.length || "";
         },
@@ -124,26 +137,41 @@
       },
       methods: {
         sortProducts() {
-    const compare = (a, b) => {
-      let fieldA = a[this.sortBy];
-      let fieldB = b[this.sortBy];
+          const compare = (a, b) => {
+            let fieldA = a[this.sortBy];
+            let fieldB = b[this.sortBy];
 
-      if (this.sortBy === "price" || this.sortBy === "spaces") {
-        fieldA = parseFloat(fieldA);
-        fieldB = parseFloat(fieldB);
-      }
+            // Handleing the price
+            if (this.sortBy === "price") {
+              fieldA = parseFloat(String(fieldA).replace(/[^\d.-]/g, "")) || 0;
+              fieldB = parseFloat(String(fieldB).replace(/[^\d.-]/g, "")) || 0;
+            }
 
-      if (fieldA < fieldB) return this.sortOrder === "asc" ? -1 : 1;
-      if (fieldA > fieldB) return this.sortOrder === "asc" ? 1 : -1;
-      return 0;
-    };
+            if (this.sortBy === "availableSpaces") {
+              fieldA = parseInt(fieldA) || 0;
+              fieldB = parseInt(fieldB) || 0;
+            }
 
-    this.products.sort(compare);
-  },
-  toggleSortOrder() {
-    this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
-    this.sortProducts(); // Ensure sorting happens immediately
-  },
+            // Handleling location
+            if (this.sortBy === "name" || this.sortBy === "location") {
+              fieldA = String(fieldA).toLowerCase();
+              fieldB = String(fieldB).toLowerCase();
+            }
+
+            if (fieldA < fieldB) return this.sortOrder === "asc" ? -1 : 1;
+            if (fieldA > fieldB) return this.sortOrder === "asc" ? 1 : -1;
+            return 0;
+          };
+
+          // Sort the products array using the `compare` function
+          this.products.sort(compare);
+        },
+
+        toggleSortOrder() {
+          this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
+          this.sortProducts();
+        },
+
         async fetchLessons() {
           try {
             const response = await fetch(
@@ -156,6 +184,30 @@
             this.sortProducts();
           } catch (error) {
             console.error("Error fetching lessons:", error);
+          }
+        },
+
+
+        async performSearch() {
+          if (this.searchQuery.trim() === "") {
+            this.searchResults = [];
+            return;
+          }
+
+          try {
+            // Fetch results from the backend
+            const response = await fetch(
+              `http://localhost:3000/api/search?name=${encodeURIComponent(this.searchQuery)}`
+            );
+
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
+            // Parse and store the results
+            const data = await response.json();
+            this.searchResults = data;
+          } catch (error) {
+            console.error("Error fetching search results:", error);
+            this.searchResults = []; // Clear results on error
           }
         },
         async saveOrder(order) {
@@ -210,6 +262,20 @@
 
         async submitOrder() {
           try {
+            // Validation for Name (letters only)
+            const namePattern = /^[a-zA-Z\s]+$/;
+            if (!namePattern.test(this.customerName)) {
+              alert("Name must contain letters only.");
+              return;
+            }
+
+            // Validation for Phone (numbers only)
+            const phonePattern = /^[0-9]{10}$/;
+            if (!phonePattern.test(this.customerPhone)) {
+              alert("Phone number must be exactly 10 digits.");
+              return;
+            }
+
             if (this.cart.length === 0) {
               alert(
                 "Your cart is empty. Please add items to your cart before submitting an order."
@@ -243,9 +309,7 @@
             this.currentView = "productList";
           } catch (error) {
             console.error("Error submitting order:", error);
-            alert(
-              "There was an error submitting your order. Please try again."
-            );
+            alert("There was an error submitting your order. Please try again.");
           }
         },
 
@@ -262,11 +326,14 @@
           }
         },
         removeFromCart(product) {
-          const index = this.cart.findIndex(
-            (item) => item.cartId === product.cartId
-          );
+          const index = this.cart.findIndex((item) => item.cartId === product.cartId);
           if (index !== -1) {
             this.cart.splice(index, 1);
+          }
+
+          // Check if the cart is empty and switch to Product List Page
+          if (this.cart.length === 0) {
+            this.currentView = "productList";
           }
         },
         itemsLeft(product) {
@@ -275,13 +342,12 @@
           ).length;
           return product.availableSpaces - countInCart;
         },
-        goToCheckout() {
+        toggleView() {
           if (this.cart.length > 0) {
-            this.currentView = "checkout";
+            this.currentView = this.currentView === "productList" ? "checkout" : "productList";
+          } else {
+            alert("Your cart is empty. Add items to proceed.");
           }
-        },
-        backToProductList() {
-          this.currentView = "productList";
         },
       },
       mounted() {
