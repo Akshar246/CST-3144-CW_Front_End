@@ -1,90 +1,288 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9; /* Light background */
+  color: #333;
+}
+
+/* App Container */
 #app {
-
-  display: grid;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.figure {
-  width: 100px;
-  height: 100%;
-  object-fit: cover;
+/* Header */
+h1 {
+  text-align: center;
+  font-size: 28px;
+  color: #007bff;
+  margin-bottom: 20px;
 }
 
-.Maths-content {
-  margin-left: 35px;
-}
-
-.add-to-cart {
-  margin-top: 10px;
+/* Checkout Button at the Top */
+.checkout {
+  display: block;
+  width: 200px;
   padding: 10px 20px;
   font-size: 16px;
-  color: #fff;
+  color: white;
   background-color: #007bff;
   border: none;
   border-radius: 5px;
+  margin: 0 auto 20px; /* Center at the top */
   cursor: pointer;
-  transition: transform 0.3s;
-  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  transition: background-color 0.3s ease-in-out, transform 0.2s;
 }
 
-.add-to-cart:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+.checkout:hover {
+  background-color: #0056b3;
 }
 
-.disabled-button {
-  background-color: #d9534f; /* Red color for disabled state */
+.checkout:active {
+  transform: scale(0.98);
+}
+
+.checkout:disabled {
+  background-color: #ccc;
   cursor: not-allowed;
 }
 
-
-
-/* .main-content {
-  display: inline; 
-  width: 30%;
-  height: 30%;
-  margin: 10px;
+/* Search Input */
+input[type="text"] {
+  width: 100%;
+  max-width: 400px;
   padding: 10px;
-  border: solid;
-  border-radius: 10px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-} */
-
-/* .main-content:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border: solid;
-} */
-
-.checkout {
-  position: absolute; 
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30%;
-  height: 50px;
-  margin-top: 10px;
-  padding: 10px 20px;
+  margin: 20px auto;
   font-size: 16px;
-  font-weight: bold;
-  color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  display: block;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+input[type="text"]::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Sorting Options */
+.sorting-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.sorting-options select {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.sorting-options select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.sorting-options button {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: white;
   background-color: #007bff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.3s;
-  font-family: "Segoe UI",  sans-serif;
-  z-index: 1000; /* Ensure it appears on top */
+  transition: background-color 0.3s ease-in-out;
 }
 
+.sorting-options button:hover {
+  background-color: #0056b3;
+}
 
-.checkout-container {
+/* Product List */
+main {
   display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   justify-content: center;
+}
+
+.main-content {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.main-content:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.main-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.Maths-content {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.Maths-content strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.add-to-cart {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.add-to-cart.disabled-button {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.add-to-cart:hover:not(.disabled-button) {
+  background-color: #0056b3;
+}
+
+span {
+  font-size: 12px;
+  color: #999;
+}
+
+span b {
+  color: #e74c3c;
+}
+
+/* Rating Stars */
+.fa-star {
+  color: #f39c12;
+  margin: 0 2px;
+}
+
+.Maths-content div {
+  margin-top: 10px;
+}
+
+/* Checkout Page */
+.checkout-page {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-heading {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.cart-items {
+  list-style: none;
+  padding: 0;
+}
+
+.cart-item {
+  display: flex;
   align-items: center;
-  height: 100vh;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-item img {
+  width: 80px;
+  border-radius: 5px;
+}
+
+.cart-item button {
+  padding: 5px 10px;
+  font-size: 14px;
+  color: white;
+  background-color: #e74c3c;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-item button:hover {
+  background-color: #c0392b;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.form-input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.form-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.submit-button {
+  padding: 10px;
+  font-size: 16px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
 }
