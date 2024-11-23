@@ -5,7 +5,7 @@ let products = [
       "location": "London",
       "price": "£ 100",
       "availableSpaces": 10,
-      "image": "./Images/PMaths-pxckife9xotc2esxcod13tks9h2zru0w73ah75dby0.jpeg",
+      "image": "./Images/Maths.jpeg",
       "addedToCart": false,
       "rating": 3
     },
@@ -15,7 +15,7 @@ let products = [
       "location": "Manchester",
       "price": "£ 100",
       "availableSpaces": 8,
-      "image": "./Images/PMaths-pxckife9xotc2esxcod13tks9h2zru0w73ah75dby0.jpeg",
+      "image": "./Images/Maths.jpeg",
       "addedToCart": false,
       "rating": 4
     },
@@ -25,7 +25,7 @@ let products = [
       "location": "London",
       "price": "£ 130",
       "availableSpaces": 4,
-      "image": "./Images/1000_F_438697732_VOA5exdnvidqFuC2M3koVPNOqikvc8sy.jpg",
+      "image": "./Images/Chemistry.jpg",
       "addedToCart": false,
       "rating": 5
     },
@@ -37,7 +37,7 @@ let products = [
       "availableSpaces": 11,
       "addedToCart": false,
       "rating": 4,
-      "image": "./Images/1000_F_438697732_VOA5exdnvidqFuC2M3koVPNOqikvc8sy.jpg"
+      "image": "./Images/Chemistry.jpg"
     },
     {
       "id": 5,
@@ -47,7 +47,7 @@ let products = [
       "availableSpaces": 16,
       "addedToCart": false,
       "rating": 5,
-      "image": "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg"
+      "image": "./Images/English.jpg"
     },
     {
       "id": 6,
@@ -57,7 +57,7 @@ let products = [
       "availableSpaces": 0,
       "addedToCart": false,
       "rating": 5,
-      "image": "./Images/collection-colored-thin-icon-of-english-language-learning-subject-book-graduated-hat-learning-and-education-concept-illustration-vector.jpg"
+      "image": "./Images/English.jpg"
     },
     {
       "id": 7,
@@ -67,7 +67,7 @@ let products = [
       "availableSpaces": 13,
       "addedToCart": false,
       "rating": 4,
-      "image": "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp"
+      "image": "./Images/Physics.webp"
     },
     {
       "id": 8,
@@ -77,7 +77,7 @@ let products = [
       "availableSpaces": 11,
       "addedToCart": false,
       "rating": 4,
-      "image": "./Images/physics-subject-conceptlettering-card-vector-600w-1110756503.webp"
+      "image": "./Images/Physics.webp"
     },
     {
       "id": 9,
@@ -87,15 +87,15 @@ let products = [
       "availableSpaces": 14,
       "addedToCart": false,
       "rating": 1,
-      "image": "./Images/ttttttttttttttttttttt-01-773.webp"
+      "image": "./Images/Music.webp"
     },
     {
       "id": 10,
-      "name": "Physics",
+      "name": "Music",
       "location": "Northern Ireland",
-      "price": "£ 80",
+      "price": "£ 170",
       "availableSpaces": 2,
       "rating": 3,
-      "image": "./Images/ttttttttttttttttttttt-01-773.webp"
+      "image": "./Images/Music.webp"
     },
   ]
