@@ -31,7 +31,8 @@ h1 {
   background-color: #007bff;
   border: none;
   border-radius: 5px;
-  margin: 0 auto 20px; /* Center the button at the top */
+  margin: 0 auto 20px;
+  /* Center the button at the top */
   cursor: pointer;
   text-align: center;
   transition: background-color 0.3s ease-in-out, transform 0.2s;
@@ -277,15 +278,22 @@ span b {
 }
 
 .submit-button {
-  padding: 10px;
-  font-size: 16px;
-  color: white;
   background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
 }
 
-.submit-button:hover {
-  background-color: #0056b3;
+/* Button when disabled */
+.submit-button:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.submit-button:not(:disabled):hover {
+  background-color: #45a049;
 }
