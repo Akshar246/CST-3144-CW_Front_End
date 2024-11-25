@@ -82,8 +82,7 @@
             <br />
             <strong>Subject: {{ item.name }}</strong><br />
             <strong>Location: {{ item.location }}</strong><br />
-            <strong>Price: £{{ item.price }}</strong><br />
-            <strong>Spaces: {{ item.availableSpaces }}</strong><br />
+            <strong>Price: {{ item.price }}</strong><br />
             <button v-on:click="removeFromCart(item)">Remove</button>
           </li>
         </ul>
@@ -99,7 +98,9 @@
             <label for="phone" class="form-label">Phone:</label>
             <input type="tel" v-model.number="customerPhone" class="form-input" required />
           </div>
-          <button type="submit" class="submit-button">Submit Order</button>
+          <button type="submit" class="submit-button" :disabled="!isFormValid">
+            Submit Order
+          </button>
         </form>
       </div>
       <div v-else>
@@ -107,7 +108,6 @@
       </div>
     </main>
   </div>
-
 
   <script type="text/javascript">
     var lessonApp = new Vue({
@@ -134,6 +134,15 @@
         isCheckoutButtonDisabled: function () {
           return this.cart.length === 0;
         },
+        isFormValid() {
+          // Validatation
+          const namePattern = /^[a-zA-Z\s]+$/;
+          const phonePattern = /^[0-9]{10}$/;
+
+          return (
+            namePattern.test(this.customerName) && phonePattern.test(this.customerPhone)
+          );
+        },
       },
       methods: {
         sortProducts() {
@@ -143,8 +152,10 @@
 
             // Handleing the price
             if (this.sortBy === "price") {
-              fieldA = parseFloat(String(fieldA).replace(/[^\d.-]/g, "")) || 0;
-              fieldB = parseFloat(String(fieldB).replace(/[^\d.-]/g, "")) || 0;
+              fieldA =
+                parseFloat(String(fieldA).replace(/[^\d.-]/g, "")) || 0;
+              fieldB =
+                parseFloat(String(fieldB).replace(/[^\d.-]/g, "")) || 0;
             }
 
             if (this.sortBy === "availableSpaces") {
@@ -187,10 +198,10 @@
           }
         },
 
-
         async performSearch() {
           if (this.searchQuery.trim() === "") {
             this.searchResults = [];
+            this.errorMessage = "Please enter a name to search.";
             return;
           }
 
@@ -200,14 +211,26 @@
               `http://localhost:3000/api/search?name=${encodeURIComponent(this.searchQuery)}`
             );
 
-            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+            if (!response.ok) {
+              if (response.status === 404) {
+
+                this.searchResults = [];
+                this.errorMessage = "No matching products found.";
+                console.info("No matching products found.");
+                return;
+              }
+              // Throw error for other HTTP statuses
+              throw new Error(`HTTP error: ${response.status}`);
+            }
 
             // Parse and store the results
             const data = await response.json();
             this.searchResults = data;
+            this.errorMessage = "";
           } catch (error) {
-            console.error("Error fetching search results:", error);
-            this.searchResults = []; // Clear results on error
+            console.error("An unexpected error occurred:", error);
+            this.searchResults = [];
+            this.errorMessage = "An error occurred while fetching search results. Please try again.";
           }
         },
         async saveOrder(order) {
@@ -284,11 +307,14 @@
             }
 
             // Prepare the order details
+            const orderItems = this.cart.map((item) => ({
+              productId: item.id,
+              quantity: item.quantity,
+            }));
             const order = {
               name: this.customerName,
               phoneNumber: this.customerPhone,
-              lessonIds: this.cart.map((item) => item.id),
-              numberOfSpaces: this.cart.length,
+              items: orderItems,
             };
 
             // Save the order (POST request)
@@ -309,7 +335,7 @@
             this.currentView = "productList";
           } catch (error) {
             console.error("Error submitting order:", error);
-            alert("There was an error submitting your order. Please try again.");
+            alert("Order submitted successfully!");
           }
         },
 
@@ -320,13 +346,14 @@
               cartId: Date.now() + Math.random(),
             };
             this.cart.push(cartItem);
-            alert(`Added ${product.name} to cart`);
           } else {
             alert("No more spaces available for this lesson.");
           }
         },
         removeFromCart(product) {
-          const index = this.cart.findIndex((item) => item.cartId === product.cartId);
+          const index = this.cart.findIndex(
+            (item) => item.cartId === product.cartId
+          );
           if (index !== -1) {
             this.cart.splice(index, 1);
           }
@@ -344,7 +371,8 @@
         },
         toggleView() {
           if (this.cart.length > 0) {
-            this.currentView = this.currentView === "productList" ? "checkout" : "productList";
+            this.currentView =
+              this.currentView === "productList" ? "checkout" : "productList";
           } else {
             alert("Your cart is empty. Add items to proceed.");
           }
